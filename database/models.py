@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 Base = declarative_base()
 
 class Customers(Base):
-    _tablename__ = 'customers'
+    __tablename__ = "customers"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     customer_code = Column(String(255), nullable=False)
@@ -21,7 +21,7 @@ class Customers(Base):
     orders = relationship('Orders', back_populates='customers')
 
 class Products(Base):
-    _tablename__ = 'products'
+    __tablename__ = 'products'
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     product_code = Column(String(255), nullable=False)
@@ -35,11 +35,11 @@ class Products(Base):
     orders = relationship('Orders', back_populates='products')
 
 class Orders(Base):
-    _tablename__ = 'orders'
+    __tablename__ = 'orders'
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    customer_code = Column(String(255), ForeignKey('customers.id'), nullable=False)
-    product_code = Column(String(255), ForeignKey('products.id'), nullable=False)
+    customer_id = Column(BigInteger, ForeignKey('customers.id'), nullable=False)
+    product_id = Column(BigInteger, ForeignKey('products.id'), nullable=False)
     total_amount = Column(Float, nullable=False)
     total_weight = Column(Float, nullable=False)
     quantity = Column(BigInteger, nullable=False)
@@ -52,11 +52,11 @@ class Orders(Base):
     invoices = relationship('Invoices', back_populates='orders')
 
 class PendingOrders(Base):
-    _tablename__ = 'pending_orders'
+    __tablename__ = 'pending_orders'
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    customer_code = Column(String(255), ForeignKey('customers.id'), nullable=False)
-    product_code = Column(String(255), ForeignKey('products.id'), nullable=False)
+    customer_id = Column(BigInteger, ForeignKey('customers.id'), nullable=False)
+    product_id = Column(BigInteger, ForeignKey('products.id'), nullable=False)
     total_amount = Column(Float, nullable=False)
     total_weight = Column(Float, nullable=False)
     quantity = Column(BigInteger, nullable=False)
@@ -67,7 +67,7 @@ class PendingOrders(Base):
     customers = relationship('Customers', back_populates='orders')
 
 class Invoices(Base):
-    _tablename__ = 'invoices'
+    __tablename__ = 'invoices'
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     invoice_no = Column(String(255), nullable=False)
