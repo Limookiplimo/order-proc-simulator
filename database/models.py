@@ -38,24 +38,23 @@ class Orders(Base):
     __tablename__ = 'orders'
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
+    order_number = Column(String(255), nullable=False, unique=True)
     customer_id = Column(BigInteger, ForeignKey('customers.id'), nullable=False)
-    product_id = Column(BigInteger, ForeignKey('products.id'), nullable=False)
     total_amount = Column(Float, nullable=False)
     total_weight = Column(Float, nullable=False)
-    quantity = Column(BigInteger, nullable=False)
     order_status = Column(BigInteger, default=0, nullable=False)
     created_at = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp())
 
-    products = relationship('Products', back_populates='orders')
     customers = relationship('Customers', back_populates='orders')
     invoices = relationship('Invoices', back_populates='orders')
 
-class PendingOrders(Base):
-    __tablename__ = 'pending_orders'
+class OrderProducts(Base):
+    __tablename__ = 'orders_products'
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    customer_id = Column(BigInteger, ForeignKey('customers.id'), nullable=False)
+    order_number = Column(String(255), ForeignKey('orders.order_number'), nullable=False)
+    line_number = Column(BigInteger, nullable=False)
     product_id = Column(BigInteger, ForeignKey('products.id'), nullable=False)
     total_amount = Column(Float, nullable=False)
     total_weight = Column(Float, nullable=False)
@@ -63,8 +62,9 @@ class PendingOrders(Base):
     created_at = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp())
 
-    products = relationship('Products', back_populates='orders')
-    customers = relationship('Customers', back_populates='orders')
+    products = relationship('Products', back_populates='orders_products')
+    orders = relationship('Orders', back_populates='orders_products')
+    invoices = relationship('Invoices', back_populates='orders')
 
 class Invoices(Base):
     __tablename__ = 'invoices'
