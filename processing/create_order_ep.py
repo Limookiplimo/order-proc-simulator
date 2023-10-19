@@ -15,12 +15,11 @@ def handle_create_order(order: schemas.OrderBase, db: Session = Depends(database
     avail_cust = db.query(models.Customers).filter(models.Customers.id == order.customer_id).first()
     if avail_cust is None:
         raise HTTPException(status_code=400, detail="Customer does not exist")
-    
     return create_order(db=db, order=order)
 
 
 @app.post("/api/create-order-product", response_model=dict)
-def handle_order_product(order_prod: schemas.OrderProductsCreate, db: Session = Depends(database_connection)):
+def handle_create_order_product(order_prod: schemas.OrderProductsCreate, db: Session = Depends(database_connection)):
     order_prod.order_number = order_prod.order_number.upper()
     for prod_data in order_prod.products:
         product_id = prod_data.product_id

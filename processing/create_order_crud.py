@@ -1,11 +1,10 @@
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
-from sqlalchemy import update
 from database import schemas
 from sqlalchemy.exc import IntegrityError
 from database import models
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
 
 def create_order(db: Session, order: schemas.OrderBase):
@@ -67,9 +66,12 @@ def create_order_product(db: Session, order_prod: schemas.OrderProductsCreate):
             db.commit()
             db.refresh(db_order_product)
 
-                # Update orders table
+            # Update orders table
             order.total_amount += t_amount
             order.total_weight += t_weight
+
+            # Update products table
+            prods.stock_count = prods.stock_count - quantity
 
         db.commit()
         return db_order_product
