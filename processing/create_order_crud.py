@@ -31,6 +31,7 @@ def create_order(db: Session, order: schemas.OrderBase):
         db.rollback()
         raise e
 
+
 def create_order_product(db: Session, order_prod: schemas.OrderProductsCreate):
     try:
         order_num = order_prod.order_number
